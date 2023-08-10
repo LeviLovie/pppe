@@ -1,2 +1,1 @@
-# pppe
-Pixel Programmable Physics Engine
+# Pixel Programmable Physics Engine
