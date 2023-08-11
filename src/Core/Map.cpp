@@ -2,12 +2,12 @@
 
 #include <iostream>
 #include <random>
+#include <functional>
 #include "../../include/Core/Element.hpp"
 
 namespace pppe {
     namespace Core {
         Map::Map(int width, int height) {
-            Element* voidElement = new Element(0x00000000, "void");
             this->width = width;
             this->height = height;
             
@@ -17,6 +17,7 @@ namespace pppe {
             }
 
             this->map = elementArray2D;
+            this->RawMap = elementArray2D;
         }
         Map::~Map() {
             for (int i = 0; i < width; i++) {
@@ -25,8 +26,8 @@ namespace pppe {
             delete[] this->map;
         }
         void Map::Debug() {
-            for (int i = 0; i < this->width; i++) {
-                for (int j = 0; j < this->height; j++) {
+            for (int i = 0; i < this->height; i++) {
+                for (int j = 0; j < this->width; j++) {
                     std::cout << "\"" << this->map[i][j]->name << "\" ";
                 }
                 std::cout << std::endl;
@@ -50,8 +51,8 @@ namespace pppe {
             }
         }
         void Map::Fill(Element* element) {
-            for (int i = 0; i < this->width; i++) {
-                for (int j = 0; j < this->height; j++) {
+            for (int i = 0; i < this->height; i++) {
+                for (int j = 0; j < this->width; j++) {
                     this->map[i][j] = element;
                 }
             }
@@ -61,8 +62,8 @@ namespace pppe {
             std::mt19937 generator(seed);
             std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
 
-            for (int i = 0; i < this->width; i++) {
-                for (int j = 0; j < this->height; j++) {
+            for (int i = 0; i < this->height; i++) {
+                for (int j = 0; j < this->width; j++) {
                     if (distribution(generator) <= chance) {
                         this->map[i][j] = element;
                     }
@@ -73,13 +74,28 @@ namespace pppe {
             std::mt19937 generator(seed);
             std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
 
-            for (int i = 0; i < this->width; i++) {
-                for (int j = 0; j < this->height; j++) {
+            for (int i = 0; i < this->height; i++) {
+                for (int j = 0; j < this->width; j++) {
                     if (distribution(generator) <= chance) {
                         this->map[i][j] = element;
                     }
                 }
             }
+        }
+        void Map::Update() {
+            memcpy(this->RawMap, this->map, sizeof(&this->map));
+        }
+        int Map::GetWidth() {
+            return this->width;
+        }
+        int Map::GetHeight() {
+            return this->height;
+        }
+        Element* Map::GetElement(int x, int y) {
+            return this->map[x][y];
+        }
+        Element*** Map::GetMap() {
+            return this->map;
         }
     }
 }
